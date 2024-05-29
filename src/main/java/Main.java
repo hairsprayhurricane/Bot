@@ -7,6 +7,9 @@ public class Main {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         Bot bot = new Bot();
         botsApi.registerBot(bot);
+<<<<<<< HEAD
         bot.sendText(1234L, "Hello World!");
+=======
+>>>>>>> 627ed0e (Initial commit)
     }
 }
