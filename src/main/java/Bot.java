@@ -37,7 +37,7 @@ public class Bot extends TelegramLongPollingBot {
     private boolean whisper = false;
 
     private InlineKeyboardMarkup keyboardM1 = InlineKeyboardMarkup.builder()
-            .keyboardRow(List.of(next)).build();;
+            .keyboardRow(List.of(next)).build();
     private InlineKeyboardMarkup keyboardM2 = InlineKeyboardMarkup.builder()
           .keyboardRow(List.of(back))
             .keyboardRow(List.of(url))
@@ -70,7 +70,9 @@ public class Bot extends TelegramLongPollingBot {
 
 >>>>>>> 627ed0e (Initial commit)
     @Override
-    public void onUpdateReceived(Update update) {
+    public void onUpdateReceived(Update update)  {
+        buttonTap(update);
+
         var msg = update.getMessage();
         var user = msg.getFrom();
         var id = user.getId();
@@ -88,22 +90,6 @@ public class Bot extends TelegramLongPollingBot {
         else
             copyMessage(user.getId(), msg.getMessageId());
         System.out.println("Id: " + id + " text: " + msg.getText() + " from: " + user);
-
-
-//        if(msg.isCommand()){
-//            if(msg.getText().equals("/scream")) {        //If the command was /scream, we switch gears
-//                whisper = false;
-//                screaming = true;
-//            }
-//            else if (msg.getText().equals("/whisper")) {  //Otherwise, we return to normal
-//                screaming = false;
-//                whisper = true;
-//            }
-//            else if (msg.getText().equals("/off")) {
-//                screaming = false;
-//                whisper = false;
-//            }
-//        }
         var txt = msg.getText();
         if(msg.isCommand()) {
             if (txt.equals("/scream")) {
@@ -120,34 +106,43 @@ public class Bot extends TelegramLongPollingBot {
             }
             else if (txt.equals("/menu")) {
                 sendMenu(id, "<b>Menu 1</b>", keyboardM1);
-                sendMenu(id, "<b>Menu 2</b>", keyboardM2);
             }
         }
     }
 
-    private void buttonTap(Long id, String queryId, String data, int msgId) throws TelegramApiException {
+    public void buttonTap(Update update) {
+        if (update.hasCallbackQuery()) {
+            String id = update.getCallbackQuery().getMessage().getChatId().toString();
+            int msgId = update.getCallbackQuery().getMessage().getMessageId();
+            String data = update.getCallbackQuery().getData();
+            String queryId = update.getCallbackQuery().getId();
 
-        EditMessageText newTxt = EditMessageText.builder()
-                .chatId(id.toString())
-                .messageId(msgId).text("").build();
+            EditMessageText newTxt = EditMessageText.builder()
+                    .chatId(id)
+                    .messageId(msgId).text("").build();
 
-        EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
-                .chatId(id.toString()).messageId(msgId).build();
+            EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
+                    .chatId(id.toString()).messageId(msgId).build();
 
-        if(data.equals("next")) {
-            newTxt.setText("MENU 2");
-            newKb.setReplyMarkup(keyboardM2);
-        } else if(data.equals("back")) {
-            newTxt.setText("MENU 1");
-            newKb.setReplyMarkup(keyboardM1);
+            if(data.equals("next")) {
+                newTxt.setText("Menu 2");
+                newKb.setReplyMarkup(keyboardM2);
+            } else if(data.equals("back")) {
+                newTxt.setText("Menu 1");
+                newKb.setReplyMarkup(keyboardM1);
+            }
+
+            AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+                    .callbackQueryId(queryId).build();
+
+            try {
+                execute(close);
+                execute(newTxt);
+                execute(newKb);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-                .callbackQueryId(queryId).build();
-
-        execute(close);
-        execute(newTxt);
-        execute(newKb);
     }
 
     private void scream(Long id, Message msg) {
