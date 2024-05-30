@@ -1,12 +1,4 @@
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-<<<<<<< HEAD
-import org.telegram.telegrambots.meta.api.methods.CopyMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-public class Bot extends TelegramLongPollingBot {
-=======
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.CopyMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
-
 public class Bot extends TelegramLongPollingBot {
     private InlineKeyboardButton next = InlineKeyboardButton.builder()
             .text("Next").callbackData("next")
@@ -43,7 +34,6 @@ public class Bot extends TelegramLongPollingBot {
             .keyboardRow(List.of(url))
             .build();
 
->>>>>>> 627ed0e (Initial commit)
 
     @Override
     public String getBotUsername() {
@@ -55,8 +45,6 @@ public class Bot extends TelegramLongPollingBot {
         return "7304795454:AAGW8R4Vx9UjDKEiudakT9TS_4yZdFZ0kGA";
     }
 
-<<<<<<< HEAD
-=======
     public void sendMenu(Long who, String txt, InlineKeyboardMarkup kb){
         SendMessage sm = SendMessage.builder().chatId(who.toString())
                 .parseMode("HTML").text(txt)
@@ -68,7 +56,6 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
->>>>>>> 627ed0e (Initial commit)
     @Override
     public void onUpdateReceived(Update update)  {
         buttonTap(update);
@@ -77,11 +64,9 @@ public class Bot extends TelegramLongPollingBot {
         var user = msg.getFrom();
         var id = user.getId();
 
-<<<<<<< HEAD
         System.out.println("Id: " + id + " text: " + msg.getText() + " from: " + user);
         //sendText(id, msg.getText());
         copyMessage(user.getId(), msg.getMessageId());
-=======
 
         if(screaming)                            //If we are screaming
             scream(id, update.getMessage());     //Call a custom method
@@ -156,7 +141,6 @@ public class Bot extends TelegramLongPollingBot {
             sendText(id, msg.getText().toLowerCase());
         else
             copyMessage(id, msg.getMessageId());  //We can't really scream a sticker
->>>>>>> 627ed0e (Initial commit)
     }
 
     public void copyMessage(Long who, Integer msgId){
